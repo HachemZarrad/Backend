@@ -12,6 +12,7 @@ const url = config.mongoUrl;
 var session = require('express-session');
 var FileStore = require('session-file-store')(session);
 
+var favoriteRouter = require('./routes/favoriteRouter');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var dishRouter = require('./routes/dishRouter');
@@ -64,11 +65,12 @@ app.use('/users', usersRouter);
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-
+app.use('/favorite',favoriteRouter);
 app.use('/dishes',dishRouter);
 app.use('/promotions',promoRouter);
 app.use('/leaders',leaderRouter);
 app.use('/imageUpload',uploadRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
