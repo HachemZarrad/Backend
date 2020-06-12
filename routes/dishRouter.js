@@ -9,6 +9,26 @@ dishRouter.use(bodyParser.json());
 
 
 
+dishRouter.route('/filter/:name')
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.get(cors.cors, (req, res, next) =>{
+    filter = req.params.name;
+    filterList = [];
+    Dishes.find()
+    .populate('comments.author')
+    .then((dishes) => {
+        for(dish of dishes){
+            if(dish.name.toLowerCase().includes(filter.toLowerCase())){
+                filterList.push(dish);
+            }
+        }
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(filterList);
+    }, (err) => next(err))
+    .catch((err) => next(err));
+});
+
 dishRouter.route('/')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors, (req,res,next) => {

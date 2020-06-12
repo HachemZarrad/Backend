@@ -8,16 +8,27 @@ const cors = require('./cors');
 router.use(bodyParser.json());
 
 /* GET users listing. */
-router.options('*', cors.corsWithOptions, (req, res) => { res.sendStatus(200); } )
-router.get('/', cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin , (req, res, next) =>{
+router.options('*', cors.corsWithOptions,  (req, res) => { res.sendStatus(200); } )
+router.get('/', authenticate.verifyUser, authenticate.verifyAdmin, cors.corsWithOptions, (req, res, next) =>{
   //res.send('respond with a resource');
-  User.find({})
+  User.find(req.query)
   .then((users) => {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
     res.json(users);
 }, (err) => next(err))
 .catch((err) => next(err));
+});
+
+
+router.delete('/:userId', cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+  User.findByIdAndRemove(req.params.userId)
+  .then((resp) => {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.json(resp);
+  }, (err) => next(err))
+  .catch((err) => next(err));
 });
 
 router.post('/signup', cors.corsWithOptions, (req, res, next) => {
@@ -71,12 +82,12 @@ router.post('/login', cors.corsWithOptions, (req, res, next) => {
       var token = authenticate.getToken({_id: req.user._id});
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
-      res.json({success: true, status: 'Login Successful!', token: token});
+      res.json({success: true, status: 'Login Successful!', token: token, admin: user.admin, userId: req.user._id});
     }); 
   }) (req, res, next);
 });
 
-router.get('/logout', cors.corsWithOptions, (req, res) => {
+router.get('/logout', cors.corsWithOptions, (req, res, next) => {
   if (req.session) {
     req.session.destroy();
     res.clearCookie('session-id');
