@@ -4,14 +4,39 @@ const mongoose = require('mongoose');
 const dishRouter = express.Router();
 const Dishes = require('../models/dishes');
 var authenticate = require('../authenticate');
+const cors = require('./cors');
 dishRouter.use(bodyParser.json());
 const cors = require('./cors');
 
 
+dishRouter.route('/filter/:name')
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.get(cors.cors, (req, res, next) =>{
+    filter = req.params.name;
+    filterList = [];
+    Dishes.find()
+    .populate('comments.author')
+    .then((dishes) => {
+        for(dish of dishes){
+            if(dish.name.toLowerCase().includes(filter.toLowerCase())){
+                filterList.push(dish);
+            }
+        }
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(filterList);
+    }, (err) => next(err))
+    .catch((err) => next(err));
+});
+
 dishRouter.route('/')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors, (req,res,next) => {
+<<<<<<< HEAD
     Dishes.find({})
+=======
+    Dishes.find(req.query)
+>>>>>>> tmp
     .populate('comments.author')
     .then((dishes) => {
         res.statusCode = 200;
