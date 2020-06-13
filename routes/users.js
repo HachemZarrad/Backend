@@ -6,15 +6,11 @@ var passport = require('passport');
 var authenticate = require('../authenticate');
 const cors = require('./cors');
 router.use(bodyParser.json());
-const cors = require('./cors');
+
 
 /* GET users listing. */
-<<<<<<< HEAD
-router.get('/', cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin , (req, res, next) =>{
-=======
 router.options('*', cors.corsWithOptions,  (req, res) => { res.sendStatus(200); } )
 router.get('/', authenticate.verifyUser, authenticate.verifyAdmin, cors.corsWithOptions, (req, res, next) =>{
->>>>>>> tmp
   //res.send('respond with a resource');
   User.find(req.query)
   .then((users) => {
@@ -25,8 +21,6 @@ router.get('/', authenticate.verifyUser, authenticate.verifyAdmin, cors.corsWith
 .catch((err) => next(err));
 });
 
-<<<<<<< HEAD
-=======
 
 router.delete('/:userId', cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
   User.findByIdAndRemove(req.params.userId)
@@ -38,7 +32,6 @@ router.delete('/:userId', cors.corsWithOptions, authenticate.verifyUser, authent
   .catch((err) => next(err));
 });
 
->>>>>>> tmp
 router.post('/signup', cors.corsWithOptions, (req, res, next) => {
   User.register(new User({username: req.body.username}), 
     req.body.password, (err, user) => {
@@ -62,22 +55,18 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
         passport.authenticate('local')(req, res, () => {
           res.statusCode = 200;
           res.setHeader('Content-Type', 'application/json');
-          res.json({success: true, status: 'Registration Successful!'});
+          res.json({success: true, status: 'Registration Successful!', admin: user.admin, userId: req.user._id});
         });
       });
     }
   });
 });
 
-<<<<<<< HEAD
-router.post('/login', cors.corsWithOptions, passport.authenticate('local'), (req, res) => {
-=======
 router.post('/login', cors.corsWithOptions, (req, res, next) => {
 
   passport.authenticate('local', (err, user, info) => {
     if (err)
       return next(err);
->>>>>>> tmp
 
     if (!user) {
       res.statusCode = 401;
@@ -99,11 +88,7 @@ router.post('/login', cors.corsWithOptions, (req, res, next) => {
   }) (req, res, next);
 });
 
-<<<<<<< HEAD
-router.get('/logout', cors.corsWithOptions, (req, res) => {
-=======
 router.get('/logout', cors.corsWithOptions, (req, res, next) => {
->>>>>>> tmp
   if (req.session) {
     req.session.destroy();
     res.clearCookie('session-id');

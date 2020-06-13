@@ -17,7 +17,11 @@ var commentSchema = new Schema({
     author: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
-    }
+    },
+    isAuthor: {
+        type: Boolean,
+        default: true
+    },
 }, {
     timestamps: true
 });

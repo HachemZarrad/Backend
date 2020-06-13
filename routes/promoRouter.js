@@ -6,17 +6,14 @@ const Promotions = require('../models/promotions');
 var authenticate = require('../authenticate');
 const cors = require('./cors');
 promoRouter.use(bodyParser.json());
-const cors = require('./cors');
+
 
 
 promoRouter.route('/')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors, (req,res,next) => {
-<<<<<<< HEAD
-    Promotions.find({})
-=======
     Promotions.find(req.query)
->>>>>>> tmp
+    .populate('comments.author')
     .then((promotions) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -54,6 +51,7 @@ promoRouter.route('/:promoId')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors, (req,res,next) => {
     Promotions.findById(req.params.promoId)
+    .populate('comments.author')
     .then((promotion) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');

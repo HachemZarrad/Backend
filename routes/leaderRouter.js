@@ -6,16 +6,12 @@ const Leaders = require('../models/leaders');
 var authenticate = require('../authenticate');
 const cors = require('./cors');
 leaderRouter.use(bodyParser.json());
-const cors = require('./cors');
+
 
 leaderRouter.route('/')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors, (req,res,next) => {
-<<<<<<< HEAD
-    Leaders.find({})
-=======
     Leaders.find(req.query)
->>>>>>> tmp
     .then((leaders) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');

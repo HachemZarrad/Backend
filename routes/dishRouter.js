@@ -6,7 +6,7 @@ const Dishes = require('../models/dishes');
 var authenticate = require('../authenticate');
 const cors = require('./cors');
 dishRouter.use(bodyParser.json());
-const cors = require('./cors');
+
 
 
 dishRouter.route('/filter/:name')
@@ -32,11 +32,7 @@ dishRouter.route('/filter/:name')
 dishRouter.route('/')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors, (req,res,next) => {
-<<<<<<< HEAD
-    Dishes.find({})
-=======
     Dishes.find(req.query)
->>>>>>> tmp
     .populate('comments.author')
     .then((dishes) => {
         res.statusCode = 200;
